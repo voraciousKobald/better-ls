@@ -1,0 +1,12 @@
+#!/bin/bash
+DIR=$PWD
+read -p "THIS WILL ADD AN ALIAS TO ~/.bashrc DO YOU CONSENT? (Y/N)       " consent
+case "$consent" in
+	y|Y ) echo "THANK YOU, YOU CAN ALWAYS REMOVE THE LINE ADDED IN ~/.bashrc IF COMPLICATIONS ARISE!";;
+	n|N ) echo "UNDERSTANDABLE, DONT FORGET TO DELETE THIS FILE FROM YOUR COMPUTER SO IT DOES NOT TAKE UP SPACE :)"; exit;;
+	* ) echo "I DONT UNDERSTAND"
+esac
+
+printf "\nalias bls='bash $DIR/bls'" >> ~/.bashrc
+echo "SETUP COMPLETE, ALIAS "bls" HAS BEEN APPENDED TO ~/.bashrc"
+rm SETUP
