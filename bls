@@ -1,14 +1,27 @@
 #!/bin/bash
-DIR=$PWD							# renames PWD to DIR in order to make code more readable
+DIR=$PWD							                                        # renames PWD to DIR in order to make code more readable
 
-printf "DIRECTORIES\n\\e[32m \n" > /tmp/drlst			# creates file named drlst inside memory, first line being DIRECTORIES new line and \e[32m (ANSII GREEN) new line
-find "$DIR"/ -maxdepth 1 -type d | cat -n >> /tmp/drlst		# searches the working directory for file type directory, pipes it to cat to get enumerated list, and appends to drlst
-printf "\\e[0m\n" >> /tmp/drlst					# appends \e[0m new line to drlst
+if [ $# == 0 ] || [ $1 == "-d" ] || [ $1 == "--directories" ]; then         # if there isn't any command line arguments or there is a directories argument run this
+    printf "DIRECTORIES\n\\e[32m \n" > /tmp/drlst			                # creates file named drlst inside memory, first line being DIRECTORIES new line and \e[32m (ANSII GREEN) new line
+    find "$DIR"/ -maxdepth 1 -type d | cat -n >> /tmp/drlst		            # searches the working directory for file type directory, pipes it to cat to get enumerated list, and appends to drlst
+    printf "\\e[0m\n" >> /tmp/drlst					                        # appends \e[0m new line to drlst
 
+    success=true                                                            # in case a condition has been met set to true
+fi
 
-printf "FILES\n\n" >> /tmp/drlst				# appends FILES new line(x2)
-find "$DIR"/ -maxdepth 1 -type f | cat -n >> /tmp/drlst		# searches working directory for file type file, pipes it to cat in order to get enumerated list and then appends to drlst
+if [ $# == 0 ] || [ $1 == "-f" ] || [ $1 == "--files" ]; then               # if there isn't any command line arguments or there is a files argument run this
+    printf "FILES\n\n" >> /tmp/drlst				                        # appends FILES new line(x2)
+    find "$DIR"/ -maxdepth 1 -type f | cat -n >> /tmp/drlst		            # searches working directory for file type file, pipes it to cat in order to get enumerated list and then appends to drlst
 
+    success=true                                                            # in case a condition has been met set to true
+fi
 
-echo -e "$(</tmp/drlst)"					# prints contents of drlst to buffer
-rm /tmp/drlst							# deletes drlst
+if [ $success ]; then                                                       # if either the files or directories (or both) conditions were met exit successfully and print output
+    echo -e "$(</tmp/drlst)"					                            # prints contents of drlst to buffer
+    rm /tmp/drlst							                                # deletes drlst
+
+    exit 0                                                                  # exit successfully
+else
+    printf "INVALID ARGUMENT\nSyntax: $0 [-f/--files/-d/--directories]\n"   # print syntax in case of failure
+    exit 1                                                                  # exit unsuccessfully
+fi
