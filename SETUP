@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 DIR=$PWD
 read -p "THIS WILL ADD AN ALIAS TO ~/.bashrc DO YOU CONSENT? (Y/N)       " consent
 case "$consent" in
@@ -7,6 +9,18 @@ case "$consent" in
 	* ) echo "I DONT UNDERSTAND"
 esac
 
-printf "\nalias bls='bash $DIR/bls'" >> ~/.bashrc
-echo "SETUP COMPLETE, ALIAS "bls" HAS BEEN APPENDED TO ~/.bashrc"
-rm SETUP
+set +e
+
+aliasline="alias bls='bash $DIR/bls'"
+isinfile=$(grep "$aliasline" $HOME/.bashrc)
+
+if [ -z "$isinfile" ]; then
+    echo $aliasline >> $HOME/.bashrc
+	echo -e "SETUP COMPLETE, ALIAS \"bls\" HAS BEEN APPENDED TO ~/.bashrc, RUN \"exec bash\" OR RESTART TERMINAL"
+	exit 0
+else
+	echo "ALIAS ALREADY IN BASHRC, EXITING"
+	exit 1
+fi
+
+set -e
